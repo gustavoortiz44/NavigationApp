@@ -7,7 +7,10 @@ import {
     Image,
     StyleSheet,
     Dimensions,
-    ScrollView
+    ScrollView,
+    FlatList,
+    SafeAreaView,
+    Alert
 } from 'react-native';
 
 import { reqResApi } from '../api/reqRes';
@@ -35,27 +38,41 @@ const Pagina1Screen = ({navigation}: Props) => {
     await reqResApi.get<ReqResListado>('/photos?albumId=1')
     .then( resp => {                    
         setUsuarios(resp.data);
-        console.log(JSON.stringify(resp.data, null, 2))
+        console.log(JSON.stringify(resp.data, null, 2))      
     })
-    .catch(console.log)
+    .catch((error) => {            
+      Alert.alert(
+          "Revisa tu conexion",
+          "Error", error
+          
+        );
+      
+  })
   }
 
   const renderItem = (usuario: ReqResListado) => {
     return(
         <View key={usuario.id.toString()} >        
-         
-        <View style={{ width: width * 1,}}>
-          <Image source={{ uri: usuario.thumbnailUrl }} style={{ width: "25%", height: 50, }} />
+
+        <FlatList style={styles.flatListStyle} data={usuarios} numColumns={2} renderItem={({ item }) => {
+          return (
+            <View>
+              <Image style={styles.image} source={{ uri: usuario.thumbnailUrl }} />
+            </View>
+          )
+        }
+        } />
+
         </View>
-          
-        </View>
-        
+   
     )
+    
+    
   }
 
   return (
     <ScrollView>
-      <View>
+      <SafeAreaView style={styles.container}>
         <Text>All Photos</Text>
         {
           usuarios.map( renderItem )
@@ -64,14 +81,15 @@ const Pagina1Screen = ({navigation}: Props) => {
           title='Ir a Pagina2'
           onPress={ () => navigation.navigate('Pagina2Screen') }
         />
-    </View>
+    </SafeAreaView>
     </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 50,
+    flex: 1,
+    backgroundColor: '#F3F3F3',
   },
   tinyLogo: {
     width: 50,
@@ -80,6 +98,13 @@ const styles = StyleSheet.create({
   logo: {
     width: 66,
     height: 58,
+  },
+  image: {
+    width: (Dimensions.get('window').width / 2) - 20,
+    height: 60,
+    margin: 5,
+    },
+  flatListStyle: { flex: 1,
   },
 });
 
