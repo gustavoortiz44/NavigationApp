@@ -74,13 +74,14 @@ const Pagina1Screen = ({navigation}: Props) => {
     <ScrollView>
       <SafeAreaView style={styles.container}>
         <Text>All Photos</Text>
-        {
-          usuarios.map( renderItem )
-        }
         <Button
           title='Ir a Pagina2'
           onPress={ () => navigation.navigate('Pagina2Screen') }
         />
+        {
+          usuarios.map( renderItem )
+        }
+        
     </SafeAreaView>
     </ScrollView>
   )
